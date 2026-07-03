@@ -1,0 +1,11 @@
+{
+  "name": "MiPróximaPega",
+  "short_name": "MiPega",
+  "description": "Tu copiloto inteligente para encontrar trabajo",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#2563EB",
+  "orientation": "portrait",
+  "icons": []
+}
