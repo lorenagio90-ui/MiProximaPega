@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
+import OfertaCard from "./components/OfertaCard";
 
 function App() {
   const [ofertas, setOfertas] = useState([]);
   const [busqueda, setBusqueda] = useState("KAM");
   const [ultimaBusqueda, setUltimaBusqueda] = useState("KAM");
-  const [error, setError] = useState("");
   const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState("");
+  const [cv, setCv] = useState(null);
 
   function buscar() {
     setError("");
@@ -15,11 +17,26 @@ function App() {
     fetch(`http://127.0.0.1:8000/buscar?cargo=${encodeURIComponent(busqueda)}`)
       .then((res) => res.json())
       .then((data) => setOfertas(data))
-      .catch((error) => {
-        console.error(error);
-        setError("No se pudo conectar con el backend.");
-      })
+      .catch(() => setError("No se pudo conectar con el backend."))
       .finally(() => setCargando(false));
+  }
+
+  async function subirCV() {
+    if (!cv) {
+      alert("Selecciona un CV en PDF primero");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", cv);
+
+    const res = await fetch("http://127.0.0.1:8000/subir-cv", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    alert(data.mensaje);
   }
 
   useEffect(() => {
@@ -27,16 +44,16 @@ function App() {
   }, []);
 
   return (
-    <div style={{ background: "#f5f7fb", minHeight: "100vh", padding: "24px", fontFamily: "Arial" }}>
-      <h1 style={{ textAlign: "center", color: "#2563EB", fontSize: "42px" }}>
+    <div className="min-h-screen bg-slate-100 px-6 py-8 font-sans">
+      <h1 className="text-center text-5xl font-bold text-blue-600">
         🚀 MiPróximaPega
       </h1>
 
-      <h2 style={{ textAlign: "center", color: "#555", marginBottom: "30px" }}>
+      <h2 className="mt-3 text-center text-xl text-slate-600">
         Tu copiloto inteligente para encontrar trabajo
       </h2>
 
-      <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
+      <div className="mt-8 flex flex-wrap justify-center gap-3">
         <input
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
@@ -44,113 +61,61 @@ function App() {
             if (e.key === "Enter") buscar();
           }}
           placeholder="Buscar cargo..."
-          style={{
-            width: "100%",
-            maxWidth: "380px",
-            padding: "12px",
-            borderRadius: "10px",
-            border: "1px solid #ccc",
-            fontSize: "16px",
-          }}
+          className="w-full max-w-md rounded-xl border border-slate-300 px-4 py-3 text-base"
         />
 
         <button
           onClick={buscar}
-          style={{
-            padding: "12px 24px",
-            borderRadius: "10px",
-            background: "#2563EB",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-            fontSize: "16px",
-          }}
+          className="rounded-xl bg-blue-600 px-6 py-3 font-bold text-white"
         >
           🔍 Buscar
         </button>
       </div>
 
-      <hr style={{ marginTop: "40px", marginBottom: "30px" }} />
+      <div className="mt-6 flex flex-wrap justify-center gap-3">
+        <input
+          type="file"
+          accept=".pdf"
+          onChange={(e) => setCv(e.target.files[0])}
+          className="rounded-xl border border-slate-300 bg-white px-4 py-3"
+        />
 
-      {error && <p style={{ color: "red", textAlign: "center", fontWeight: "bold" }}>{error}</p>}
+        <button
+          onClick={subirCV}
+          className="rounded-xl bg-emerald-600 px-6 py-3 font-bold text-white"
+        >
+          📄 Subir CV
+        </button>
+      </div>
 
-      <h2 style={{ textAlign: "center", color: "#333" }}>
+      <hr className="my-8" />
+
+      {error && <p className="text-center font-bold text-red-600">{error}</p>}
+
+      <h2 className="text-center text-2xl font-bold text-slate-800">
         Resultados para "{ultimaBusqueda}"
       </h2>
 
       {cargando ? (
-        <p style={{ textAlign: "center", color: "#666" }}>⏳ Buscando ofertas...</p>
+        <p className="mt-4 text-center text-slate-600">⏳ Buscando ofertas...</p>
       ) : (
-        <p style={{ textAlign: "center", color: "#666" }}>
+        <p className="mt-2 text-center text-slate-600">
           {ofertas.length} oferta{ofertas.length === 1 ? "" : "s"} encontrada
           {ofertas.length === 1 ? "" : "s"}
         </p>
       )}
 
       {!cargando && ofertas.length === 0 && (
-        <div style={{
-          background: "white",
-          padding: "25px",
-          borderRadius: "15px",
-          marginTop: "20px",
-          maxWidth: "700px",
-          marginLeft: "auto",
-          marginRight: "auto",
-          textAlign: "center",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-        }}>
-          <h2>😕 No encontré ofertas</h2>
-          <p>Prueba con otro cargo, por ejemplo: KAM, Customer o Ejecutivo.</p>
+        <div className="mx-auto mt-6 max-w-2xl rounded-2xl bg-white p-6 text-center shadow">
+          <h2 className="text-2xl font-bold">😕 No encontré ofertas</h2>
+          <p className="mt-2 text-slate-600">
+            Prueba con otro cargo, por ejemplo: KAM, Customer o Ejecutivo.
+          </p>
         </div>
       )}
 
       {ofertas.map((oferta, index) => (
-        <div key={index} style={{
-          background: "white",
-          padding: "20px",
-          borderRadius: "15px",
-          marginTop: "20px",
-          maxWidth: "700px",
-          marginLeft: "auto",
-          marginRight: "auto",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-        }}>
-          <h2>{oferta.titulo}</h2>
-          <p><strong>{oferta.empresa}</strong></p>
-          <p>📍 {oferta.ubicacion}</p>
-          <p>🌐 {oferta.fuente}</p>
-
-          <div style={{
-            height: "10px",
-            background: "#ddd",
-            borderRadius: "20px",
-            overflow: "hidden",
-            marginTop: "15px",
-            marginBottom: "10px",
-          }}>
-            <div style={{
-              width: `${oferta.compatibilidad}%`,
-              height: "100%",
-              background: "#22c55e",
-            }} />
-          </div>
-
-          <p>Compatibilidad: <strong>{oferta.compatibilidad}%</strong></p>
-
-          <button
-            onClick={() => window.open(oferta.link, "_blank")}
-            style={{
-              background: "#2563EB",
-              color: "white",
-              border: "none",
-              padding: "10px 20px",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
-          >
-            Ver oferta
-          </button>
-        </div>
+        <OfertaCard key={index} oferta={oferta} />
       ))}
     </div>
   );

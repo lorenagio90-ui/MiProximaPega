@@ -1,5 +1,4 @@
 def buscar_linkedin(cargo):
-
     datos = [
         {
             "titulo": "KAM Logístico",
@@ -7,7 +6,7 @@ def buscar_linkedin(cargo):
             "ubicacion": "Santiago",
             "fuente": "LinkedIn",
             "compatibilidad": 92,
-            "link": "https://linkedin.com/jobs"
+            "link": "https://www.linkedin.com/jobs/search/?keywords=KAM%20Log%C3%ADstico&location=Chile"
         },
         {
             "titulo": "Customer Success",
@@ -15,7 +14,7 @@ def buscar_linkedin(cargo):
             "ubicacion": "Remoto",
             "fuente": "LinkedIn",
             "compatibilidad": 88,
-            "link": "https://linkedin.com/jobs"
+            "link": "https://www.linkedin.com/jobs/search/?keywords=Customer%20Success&location=Chile"
         },
         {
             "titulo": "Ejecutivo Comercial",
@@ -23,7 +22,7 @@ def buscar_linkedin(cargo):
             "ubicacion": "Valparaíso",
             "fuente": "LinkedIn",
             "compatibilidad": 81,
-            "link": "https://linkedin.com/jobs"
+            "link": "https://www.linkedin.com/jobs/search/?keywords=Ejecutivo%20Comercial&location=Chile"
         }
     ]
 
