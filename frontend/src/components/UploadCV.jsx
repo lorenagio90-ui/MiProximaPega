@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { subirCV } from "../services/api";
 
-function UploadCV() {
+function UploadCV({ onPerfilDetectado }) {
   const [cv, setCv] = useState(null);
 
   async function handleSubirCV() {
@@ -11,21 +11,12 @@ function UploadCV() {
     }
 
     const data = await subirCV(cv);
-    const perfil = data.perfil;
 
-    alert(`✅ ${data.mensaje}
+    if (data.perfil) {
+      onPerfilDetectado(data.perfil);
+    }
 
-👤 Perfil detectado
-
-Nombre: ${perfil.nombre || "No detectado"}
-Profesión: ${perfil.profesion || "No detectada"}
-
-Idiomas:
-${perfil.idiomas?.join(", ") || "No detectados"}
-
-Habilidades:
-${perfil.habilidades?.join(", ") || "No detectadas"}
-`);
+    alert(`✅ ${data.mensaje}`);
   }
 
   return (
