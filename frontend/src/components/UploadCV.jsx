@@ -11,8 +11,21 @@ function UploadCV() {
     }
 
     const data = await subirCV(cv);
-    console.log(data.texto);
-    alert(`✅ ${data.mensaje}`);
+    const perfil = data.perfil;
+
+    alert(`✅ ${data.mensaje}
+
+👤 Perfil detectado
+
+Nombre: ${perfil.nombre || "No detectado"}
+Profesión: ${perfil.profesion || "No detectada"}
+
+Idiomas:
+${perfil.idiomas?.join(", ") || "No detectados"}
+
+Habilidades:
+${perfil.habilidades?.join(", ") || "No detectadas"}
+`);
   }
 
   return (
